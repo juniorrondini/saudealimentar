@@ -1,0 +1,20 @@
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  /* Gradiente animado padrão */
+  .animatedHeader {
+    background: linear-gradient(270deg, #047857, #059669, #10B981, #047857);
+    background-size: 100% 100%;
+  }
+  
+  /* Quando a página for rolada, reduzimos apenas a opacidade */
+  .scrolled {
+    background: linear-gradient(270deg, rgba(4, 120, 87, 0.404), rgba(5, 150, 104, 0.429), rgba(16, 185, 129, 0.404), rgba(4, 120, 87, 0.552));
+    background-size: 200% 200%;
+    animation: none; /* Para a animação do gradiente */
+    transition: background 0.8s ease-in-out, opacity 0.8s ease-in-out;
+  }
+  

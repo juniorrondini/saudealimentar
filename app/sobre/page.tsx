@@ -7,7 +7,7 @@ export default function About() {
 
       <section className="flex flex-col md:flex-row items-start mb-12">
         <Image
-          src="/placeholder.svg"
+          src="/Pri2.png"
           alt="Foto Profissional"
           width={300}
           height={400}

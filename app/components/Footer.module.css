@@ -1,0 +1,12 @@
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  .animatedFooter {
+    background: linear-gradient(270deg, #047857, #059669, #10B981, #047857);
+    background-size: 400% 400%;
+    animation: gradientAnimation 25s ease infinite;
+  }
+  
