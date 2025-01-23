@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Services from "./components/Services";
+import ReviewForm from "./components/ReviewForm"; // 🔥 Importamos o componente
 
 export default function Home() {
   return (
@@ -25,9 +26,12 @@ export default function Home() {
           className="rounded-full"
         />
       </section>
+       {/* Seção de serviços importada */}
+       <Services />
+     
 
-      {/* Seção de serviços importada */}
-      <Services />
+       {/* 🔥 Seção de Avaliação com Estrelas e Comentários */}
+       <ReviewForm />
     </div>
   );
 }
