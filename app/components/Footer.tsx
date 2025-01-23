@@ -20,9 +20,9 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* Redes Sociais */}
-        <div>
-          <h3 className="text-xl font-bold mb-4">Redes Sociais</h3>
+        {/* Redes Sociais - Agora com o título acima dos ícones */}
+        <div className="flex flex-col items-center md:items-center">
+          <h3 className="text-xl font-bold mb-3">Redes Sociais</h3>
           <div className="flex justify-center space-x-4">
             <Link href="https://facebook.com" className="hover:text-green-200 transition-transform transform hover:scale-110">
               <Facebook size={24} />
@@ -34,7 +34,7 @@ export default function Footer() {
         </div>
 
         {/* Direitos Autorais */}
-        <div>
+        <div className="flex flex-col items-center md:items-end">
           <p>&copy; 2024 Saúde Alimentar</p>
           <p>Todos os direitos reservados</p>
         </div>
