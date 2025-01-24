@@ -27,8 +27,7 @@ export default function ReviewForm() {
     fetch("/api/reviews")
       .then((res) => res.json())
       .then((data: Review[]) => {
-        const lastNineReviews = data.slice(0, 9); // Últimas 9 avaliações
-        setReviews(lastNineReviews);
+        setReviews(data.slice(0, 9)); // Últimas 9 avaliações
 
         if (data.length > 0) {
           const avg = data.reduce((sum, review) => sum + review.rating, 0) / data.length;
@@ -67,14 +66,13 @@ export default function ReviewForm() {
     });
 
     if (response.ok) {
-      setReviews([newReview, ...reviews.slice(0, 8)]); // Mantém apenas as últimas 9 avaliações
+      setReviews([newReview, ...reviews.slice(0, 8)]);
       setRating(0);
       setComment("");
       setName("");
-      setTotalReviews(totalReviews + 1); // Atualiza o total de avaliações
-      setHasReviewed(true); // Bloqueia futuras avaliações
-
-      localStorage.setItem("userReviewed", "true"); // Marca que o usuário já enviou uma avaliação
+      setTotalReviews(totalReviews + 1);
+      setHasReviewed(true);
+      localStorage.setItem("userReviewed", "true");
     }
   };
 
@@ -82,11 +80,11 @@ export default function ReviewForm() {
     <section className="w-full bg-green-300/10 backdrop-blur-lg shadow-lg p-8 border border-green-800">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-start justify-between gap-8">
         
-        {/* Formulário de Avaliação - Agora retangular e ocupando toda a largura */}
-        <div className="w-full md:w-1/3 bg-green-800/80 shadow-lg rounded-lg p-6 border border-green-600">
+        {/* Formulário de Avaliação (Sempre com tamanho fixo) */}
+        <div className="w-full md:w-1/3 bg-green-800/80 shadow-lg rounded-lg p-6 border border-green-600 min-h-[400px] flex flex-col items-center justify-center">
           <h2 className="text-2xl font-bold text-center text-white mb-4">Deixe sua Avaliação ⭐</h2>
 
-          {/* Exibir média de avaliação e total de avaliações */}
+          {/* Média de avaliação e total de avaliações */}
           <div className="flex flex-col items-center mb-6">
             <p className="text-lg font-semibold text-white">Média de Avaliação:</p>
             <div className="flex items-center space-x-2">
@@ -100,16 +98,21 @@ export default function ReviewForm() {
             <p className="text-white text-lg font-semibold">{averageRating}/5</p>
           </div>
 
-          {/* Formulário */}
-          {!hasReviewed ? (
-            <form onSubmit={handleSubmit} className="flex flex-col items-center gap-4">
-              {/* Nome do Usuário */}
+          {/* Formulário ou Mensagem caso já tenha avaliado */}
+          {hasReviewed ? (
+            <div className="flex flex-col items-center justify-center w-full h-full">
+              <div className="bg-green-700/60 text-white text-center text-lg font-semibold p-4 rounded-md w-3/4">
+                ✅ Você já enviou sua avaliação. Obrigado!
+              </div>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="flex flex-col items-center gap-4 w-full">
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Seu Nome"
-                className="w-full p-2 border border-green-400 bg-green-700/60 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 placeholder-white/80"
+                className="w-full p-2 border border-green-400 bg-green-700/60 text-white rounded-md"
               />
 
               {/* Estrelas para Avaliação */}
@@ -128,32 +131,27 @@ export default function ReviewForm() {
                 ))}
               </div>
 
-              {/* Comentário */}
               <textarea
                 value={comment}
                 onChange={(e) => setComment(e.target.value.slice(0, 200))}
                 placeholder="Escreva seu comentário... (máx. 200 caracteres)"
-                className="w-full p-2 border border-green-400 bg-green-700/60 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 placeholder-white/80"
+                className="w-full p-2 border border-green-400 bg-green-700/60 text-white rounded-md"
                 rows={3}
               ></textarea>
 
-              {/* Contador de Caracteres */}
               <p className="text-sm text-white/70">{comment.length}/200 caracteres</p>
 
-              {/* Botão de Enviar */}
-              <button type="submit" className="bg-yellow-500 text-green-900 font-bold px-6 py-2 rounded-md hover:bg-yellow-600 transition">
+              <button type="submit" className="bg-yellow-500 text-green-900 font-bold px-6 py-2 rounded-md">
                 Enviar Avaliação
               </button>
             </form>
-          ) : (
-            <p className="text-white text-center mt-4 font-semibold">✅ Você já enviou sua avaliação. Obrigado!</p>
           )}
         </div>
 
-        {/* Exibir as últimas 9 Avaliações */}
+        {/* Exibir Avaliações */}
         <div className="w-full md:w-2/3 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
           {reviews.map((review, index) => (
-            <div key={index} className="p-4 bg-green-700/80 backdrop-blur-md shadow-md border border-green-900 rounded-md flex flex-col items-center text-center">
+            <div key={index} className="p-4 bg-green-700/80 shadow-md border border-green-900 rounded-md flex flex-col items-center text-center">
               <p className="font-semibold text-white">{review.name}</p>
               <div className="flex justify-center space-x-1">
                 {[1, 2, 3, 4, 5].map((star) => (
