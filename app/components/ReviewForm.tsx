@@ -14,9 +14,16 @@ export default function ReviewForm() {
   const [comment, setComment] = useState<string>("");
   const [reviews, setReviews] = useState<Review[]>([]);
   const [averageRating, setAverageRating] = useState<number>(0);
+  const [totalReviews, setTotalReviews] = useState<number>(0);
+  const [hasReviewed, setHasReviewed] = useState<boolean>(false);
 
-  // Buscar avaliações do backend ao carregar a página
+  // Verifica no LocalStorage se o usuário já fez uma avaliação
   useEffect(() => {
+    const userReviewed = localStorage.getItem("userReviewed");
+    if (userReviewed) {
+      setHasReviewed(true);
+    }
+
     fetch("/api/reviews")
       .then((res) => res.json())
       .then((data: Review[]) => {
@@ -27,12 +34,19 @@ export default function ReviewForm() {
           const avg = data.reduce((sum, review) => sum + review.rating, 0) / data.length;
           setAverageRating(parseFloat(avg.toFixed(1))); // Média de avaliações
         }
+
+        setTotalReviews(data.length); // Total de avaliações
       });
   }, []);
 
   // Enviar avaliação para o backend
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (hasReviewed) {
+      alert("Você já enviou uma avaliação. Apenas uma por dispositivo!");
+      return;
+    }
 
     if (!name.trim() || rating === 0 || !comment.trim()) {
       alert("Por favor, preencha todos os campos e selecione uma nota.");
@@ -57,6 +71,10 @@ export default function ReviewForm() {
       setRating(0);
       setComment("");
       setName("");
+      setTotalReviews(totalReviews + 1); // Atualiza o total de avaliações
+      setHasReviewed(true); // Bloqueia futuras avaliações
+
+      localStorage.setItem("userReviewed", "true"); // Marca que o usuário já enviou uma avaliação
     }
   };
 
@@ -68,66 +86,71 @@ export default function ReviewForm() {
         <div className="w-full md:w-1/3 bg-green-800/80 shadow-lg rounded-lg p-6 border border-green-600">
           <h2 className="text-2xl font-bold text-center text-white mb-4">Deixe sua Avaliação ⭐</h2>
 
-          {/* Exibir média de avaliação */}
+          {/* Exibir média de avaliação e total de avaliações */}
           <div className="flex flex-col items-center mb-6">
             <p className="text-lg font-semibold text-white">Média de Avaliação:</p>
-            <div className="flex">
+            <div className="flex items-center space-x-2">
               {[1, 2, 3, 4, 5].map((star) => (
                 <span key={star} className={`text-3xl ${averageRating >= star ? "text-yellow-500" : "text-gray-300"}`}>
                   ★
                 </span>
               ))}
+              <span className="text-white text-lg font-semibold">({totalReviews} avaliações)</span>
             </div>
             <p className="text-white text-lg font-semibold">{averageRating}/5</p>
           </div>
 
           {/* Formulário */}
-          <form onSubmit={handleSubmit} className="flex flex-col items-center gap-4">
-            {/* Nome do Usuário */}
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Seu Nome"
-              className="w-full p-2 border border-green-400 bg-green-700/60 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 placeholder-white/80"
-            />
+          {!hasReviewed ? (
+            <form onSubmit={handleSubmit} className="flex flex-col items-center gap-4">
+              {/* Nome do Usuário */}
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Seu Nome"
+                className="w-full p-2 border border-green-400 bg-green-700/60 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 placeholder-white/80"
+              />
 
-            {/* Estrelas para Avaliação */}
-            <div className="flex space-x-2">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <button
-                  key={star}
-                  type="button"
-                  onClick={() => setRating(star)}
-                  className={`text-3xl transition ${
-                    rating >= star ? "text-yellow-500" : "text-gray-300 hover:text-yellow-400"
-                  }`}
-                >
-                  ★
-                </button>
-              ))}
-            </div>
+              {/* Estrelas para Avaliação */}
+              <div className="flex space-x-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onClick={() => setRating(star)}
+                    className={`text-3xl transition ${
+                      rating >= star ? "text-yellow-500" : "text-gray-300 hover:text-yellow-400"
+                    }`}
+                  >
+                    ★
+                  </button>
+                ))}
+              </div>
 
-            {/* Comentário */}
-            <textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value.slice(0, 200))}
-              placeholder="Escreva seu comentário... (máx. 200 caracteres)"
-              className="w-full p-2 border border-green-400 bg-green-700/60 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 placeholder-white/80"
-              rows={3}
-            ></textarea>
+              {/* Comentário */}
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value.slice(0, 200))}
+                placeholder="Escreva seu comentário... (máx. 200 caracteres)"
+                className="w-full p-2 border border-green-400 bg-green-700/60 text-white rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 placeholder-white/80"
+                rows={3}
+              ></textarea>
 
-            {/* Contador de Caracteres */}
-            <p className="text-sm text-white/70">{comment.length}/200 caracteres</p>
+              {/* Contador de Caracteres */}
+              <p className="text-sm text-white/70">{comment.length}/200 caracteres</p>
 
-            {/* Botão de Enviar */}
-            <button type="submit" className="bg-yellow-500 text-green-900 font-bold px-6 py-2 rounded-md hover:bg-yellow-600 transition">
-              Enviar Avaliação
-            </button>
-          </form>
+              {/* Botão de Enviar */}
+              <button type="submit" className="bg-yellow-500 text-green-900 font-bold px-6 py-2 rounded-md hover:bg-yellow-600 transition">
+                Enviar Avaliação
+              </button>
+            </form>
+          ) : (
+            <p className="text-white text-center mt-4 font-semibold">✅ Você já enviou sua avaliação. Obrigado!</p>
+          )}
         </div>
 
-        {/* Exibir as últimas 9 Avaliações - Agora bem alinhadas e harmoniosas */}
+        {/* Exibir as últimas 9 Avaliações */}
         <div className="w-full md:w-2/3 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4">
           {reviews.map((review, index) => (
             <div key={index} className="p-4 bg-green-700/80 backdrop-blur-md shadow-md border border-green-900 rounded-md flex flex-col items-center text-center">
@@ -144,8 +167,6 @@ export default function ReviewForm() {
           ))}
         </div>
       </div>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8997726626133132"
-     crossOrigin="anonymous"></script>
     </section>
   );
 }
