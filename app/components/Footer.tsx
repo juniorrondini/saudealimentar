@@ -1,3 +1,4 @@
+"use client";
 import { Facebook, Instagram, Mail, Phone } from "lucide-react";
 import Link from "next/link";
 import styles from "./Footer.module.css"; // CSS Modules
@@ -39,6 +40,9 @@ export default function Footer() {
           <p>Todos os direitos reservados</p>
         </div>
       </div>
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8997726626133132"
+    crossOrigin="anonymous"></script>
     </footer>
+    
   );
 }

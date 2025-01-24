@@ -32,6 +32,8 @@ export default function Home() {
 
        {/* 🔥 Seção de Avaliação com Estrelas e Comentários */}
        <ReviewForm />
+       <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8997726626133132"
+     crossOrigin="anonymous"></script>
     </div>
   );
 }

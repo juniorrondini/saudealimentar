@@ -144,6 +144,8 @@ export default function ReviewForm() {
           ))}
         </div>
       </div>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8997726626133132"
+     crossOrigin="anonymous"></script>
     </section>
   );
 }
